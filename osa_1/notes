@@ -1,0 +1,69 @@
+- uml-kaavio
+- uml -> relaatiot
+- mitä funktionaalisia riippuvuuksia?
+- onko anomalioita?
+- onko bcnf? jos ei niin ositetaan
+
+toimipiste
+- osoite
+- mitä teoksia kullakin hetkellä
+
+teos
+- kirja/lehti/cd/dvd
+- kotitoimipiste
+- onko varattavissa
+- onko lainattavissa
+- max lainausaika
+
+- yksittäisen kappaleen aiemmat lainaajat
+- mitä tehdään seuraavaksi?
+	- jätetään palautustoimipisteeseen
+	- palautetaan kotitoimipisteeseen
+	- kuljetetaan johonkin toiseen toimipisteeseen (varaus)
+
+kirja
+- isbn
+- nimi
+- tekijä
+- kustantaja
+- julkaisuvuosi
+- kieli
+- sivumäärä?
+- genre
+- luokkakoodi
+
+lehti
+- issn
+- nimi
+- julkaisija
+- vuosikerta/numero
+- kieli
+
+cd
+- isrc
+- nimi
+- artisti
+- kappaleiden määrä
+- genre
+- julkaisuvuosi
+
+dvd
+- nimi
+- 
+
+asiakas
+- mitä lainassa
+- lainojen viimeiset palautuspäivät
+- maksetut maksut
+- maksamatta olevat maksut
+
+teoksien varaus
+- varausjono kullekin teokselle
+
+teoksien kuljetus
+- mitä teoksia kyydissä?
+- mistä toimipisteestä mihin?
+
+maksut
+- myöhästymismaksu
+- varausmaksu

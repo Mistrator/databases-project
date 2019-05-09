@@ -1,0 +1,5 @@
+- Monesta yhteen -assosiaatiosta tehty tarpeeton uusi relaatio. (Tämä ei vähennä pisteitä 1. vaiheessa, mutta asia pitää muuttaa 2. vaiheessa.) 
+
+- Päätepisteet relaatio ei aivan vastaa UML-kaaviota. UML-kaaviossa yksittäinen assosiaatio ei voi yhdistää kahta yhden luokan oliota toiseen luokkaan samassa monikossa (eli eri attribuutteina relaatiomallissa). Nykyistä relaatiomallianne vastaavassa UML-kaaviossa tämä tulisi esittää kahtena rinnakkaisena monesta-yhteen assosiaationa, jotka relaatiomallissa yhdistettäisiin. Se tosin kannattaisi vielä lisäksi yhdistää kuljetuksen tietoihin yksinkertaistamaan tietokannan rakennetta.
+
+- muutetaan monesta yhteen-relaatiot
