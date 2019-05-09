@@ -1,5 +1,5 @@
 CREATE TABLE Teos (
-	standardiTunnus VARCHAR(32),
+	standardiTunnus VARCHAR(32) NOT NULL,
 	nimi VARCHAR(256),
 	julkaisuvuosi INT,
 	genre VARCHAR(256),
@@ -9,10 +9,10 @@ CREATE TABLE Teos (
 
 CREATE TABLE Kappale (
 	standardiTunnus VARCHAR(32),
-	kappaleTunnus INT,
+	kappaleTunnus INT NOT NULL,
 	varattavissa BOOLEAN,
 	lainattavissa BOOLEAN,
-	maxLainausaika INT, -- seconds
+	maxLainausaika INT NOT NULL, -- seconds
 	kotitoimipiste VARCHAR(256),
 	PRIMARY KEY (standardiTunnus, kappaleTunnus),
 	FOREIGN KEY (standardiTunnus) REFERENCES Teos(standardiTunnus),
@@ -20,7 +20,7 @@ CREATE TABLE Kappale (
 );
 
 CREATE TABLE Kirja (
-	standardiTunnus VARCHAR(32),
+	standardiTunnus VARCHAR(32) NOT NULL,
 	tekija VARCHAR(256),
 	kustantaja VARCHAR(256),
 	sivumaara INT,
@@ -29,7 +29,7 @@ CREATE TABLE Kirja (
 );
 
 CREATE TABLE Lehti (
-	standardiTunnus VARCHAR(32),
+	standardiTunnus VARCHAR(32) NOT NULL,
 	julkaisija VARCHAR(256),
 	vuosikerta INT,
 	numero INT,
@@ -38,7 +38,7 @@ CREATE TABLE Lehti (
 );
 
 CREATE TABLE CD (
-	standardiTunnus VARCHAR(32),
+	standardiTunnus VARCHAR(32) NOT NULL,
 	artisti VARCHAR(256),
 	kappaleMaara INT,
 	levyYhtio VARCHAR(256),
@@ -47,7 +47,7 @@ CREATE TABLE CD (
 );
 
 CREATE TABLE DVD (
-	standardiTunnus VARCHAR(32),
+	standardiTunnus VARCHAR(32) NOT NULL,
 	julkaisija VARCHAR(256),
 	kesto INT, --seconds
 	PRIMARY KEY (standardiTunnus),
@@ -55,7 +55,7 @@ CREATE TABLE DVD (
 );
 
 CREATE TABLE Asiakas (
-	asiakasNro INT,
+	asiakasNro INT NOT NULL,
 	nimi VARCHAR(256),
 	osoite VARCHAR(256),
 	email VARCHAR(256)
@@ -63,7 +63,7 @@ CREATE TABLE Asiakas (
 );
 
 CREATE TABLE Varaus (
-	tunniste INT,
+	tunniste INT NOT NULL,
 	teosStandardiTunnus VARCHAR(32),
 	teosKappaleTunnus INT,
 	varausAjankohta DATE,
@@ -87,7 +87,7 @@ CREATE TABLE Palautus (
 );
 
 CREATE TABLE Maksu (
-	tunniste INT,
+	tunniste INT NOT NULL,
 	summa INT, -- sentteja
 	tyyppi VARCHAR(256),
 	maksettu BOOLEAN,
@@ -97,13 +97,13 @@ CREATE TABLE Maksu (
 );
 
 CREATE TABLE Toimipiste (
-	nimi VARCHAR(256),
+	nimi VARCHAR(256) NOT NULL,
 	osoite VARCHAR(256),
 	PRIMARY KEY (nimi)
 );
 
 CREATE TABLE Kuljetus (
-	kuljetusID INT,
+	kuljetusID INT NOT NULL,
 	lahtoaika DATE,
 	lahtoToimipiste VARCHAR(256),
 	paateToimipiste VARCHAR(256),
@@ -115,8 +115,8 @@ CREATE TABLE Kuljetus (
 CREATE TABLE Lainassa (
 	standardiTunnus VARCHAR(32),
 	kappaleTunnus INT,
-	lainausAika DATE,
-	eraantymisAika DATE,
+	lainausAika DATE NOT NULL,
+	eraantymisAika DATE NOT NULL,
 	asiakasNro INT,
 	PRIMARY KEY (standardiTunnus, kappaleTunnus, lainausAika),
 	FOREIGN KEY (standardiTunnus, kappaleTunnus) REFERENCES Kappale(standardiTunnus, kappaleTunnus),
