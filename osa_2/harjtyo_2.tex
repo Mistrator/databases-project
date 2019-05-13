@@ -145,8 +145,6 @@ Poistetaan tarpeettomia monesta yhteen -assosiaatioista muodostettuja relaatioit
 
 Muutetaan \texttt{Palautus}-relaation avainta: asiakasnumeron ei tarvitse olla avaimena, koska tietty teoksen kappale voidaan palauttaa vain kerran tiettynä ajanhetkenä.
 
-Lisätään lainausaika \texttt{Lainassa}-relaation avaimeksi: sama asiakas voi lainata saman teoksen useasti.
-
 Erotetaan teoksen yleiset ja kappalekohtaiset tiedot kahdeksi eri relaatioksi \texttt{Teos} ja \texttt{Kappale}. Relaatio on tällöin BCNF:ssä.
 
 Poistetaan kappaletunnus relaatioista \texttt{Kirja}, \texttt{Lehti}, \texttt{CD} ja \texttt{DVD}. Tällöin relaatiot ovat BCNF:ssä.
@@ -169,7 +167,7 @@ Uusi relaatiokaavio on:
 \end{itemize}
 
 \begin{itemize}
-	\item \texttt{Lainassa(\underline{standardiTunnus}, \underline{kappaleTunnus}, \underline{lainausAika}, eraantymisAika, asiakasNro)}
+	\item \texttt{Lainassa(\underline{standardiTunnus}, \underline{kappaleTunnus}, lainausAika, eraantymisAika, asiakasNro)}
 	\item \texttt{Toimipisteessa(\underline{standardiTunnus}, \underline{kappaleTunnus}, toimipisteNimi)}
 	\item \texttt{Kuljetettavana(\underline{standardiTunnus}, \underline{kappaleTunnus}, kuljetusID)}
 \end{itemize}

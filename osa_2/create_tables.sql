@@ -118,7 +118,7 @@ CREATE TABLE Lainassa (
 	lainausAika DATE NOT NULL,
 	eraantymisAika DATE NOT NULL CHECK (lainausAika <= eraantymisAika),
 	asiakasNro INT,
-	PRIMARY KEY (standardiTunnus, kappaleTunnus, lainausAika),
+	PRIMARY KEY (standardiTunnus, kappaleTunnus),
 	FOREIGN KEY (standardiTunnus, kappaleTunnus) REFERENCES Kappale(standardiTunnus, kappaleTunnus),
 	FOREIGN KEY (asiakasNro) REFERENCES Asiakas(asiakasNro)
 );
