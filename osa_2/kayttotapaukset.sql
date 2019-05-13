@@ -32,11 +32,12 @@ VALUES (123, 'Matti Meikäläinen', 'Otakaari 20', 'matti.meikalainen@gmail.com'
 
 /*
 	Asiakas lainaa teoksen kappaleen toimipisteestä.
-	Oletetaan, että kappale on toimipisteessä.
+	Oletetaan, että kappale on toimipisteessä ja asiakas voi lainata sen, eli
+	se on lainattavissa eikä ole varattuna kenellekään muulle.
 	Lainausajaksi asetetaan lainaushetki ja erääntymisajaksi 
 	lainaushetki + kappaleen max lainausaika.
-
 	Poistetaan tämän jälkeen kappale toimipisteestä, jossa se oli.
+	Poistetaan myös käyttäjän mahdolliset teokseen kohdistuneet varaukset.
 
 	Matti Meikäläinen lainaa yhden kappaleen Kalevalaa.
 */
@@ -50,6 +51,8 @@ VALUES ('978-951-1-23676-4', 0, datetime('now'), datetime('now',
 DELETE FROM Toimipisteessa
 WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0;
 
+DELETE FROM Varaus
+WHERE teosStandardiTunnus = '978-951-1-23676-4' AND varaajaAsiakasNro = 123;
 
 /*
 	Asiakas palauttaa teoksen kappaleen johonkin toimipisteeseen.
@@ -96,3 +99,18 @@ SELECT asiakasNro, nimi, osoite, email, palautusAjankohta
 FROM Palautus NATURAL JOIN Asiakas
 WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0
 ORDER BY palautusAjankohta DESC;
+
+/*
+	Tehdään uusi teokseen kohdistuva varaus.
+
+	Matti Meikäläinen varaa kappaleen Kalevalaa toimitettavaksi Oodiin.
+*/
+INSERT INTO Varaus (tunniste, teosStandardiTunnus, varausAjankohta, varaajaAsiakasNro, noutoToimipiste)
+VALUES (12345678, '978-951-1-23676-4', datetime('now'), 123, 'Oodi')
+
+/*
+	Selvitetään, mitkä lainat ovat myöhässä ja kysytään lainaajien tiedot.
+*/
+SELECT asiakasNro, Asiakas.nimi AS asiakasNimi, osoite, email, standardiTunnus, Teos.nimi AS teosNimi, eraantymisAika, julianday(datetime('now'))-julianday(eraantymisAika) AS pvMyohassa
+FROM (Lainassa NATURAL JOIN Asiakas) JOIN Teos ON Lainassa.standardiTunnus = Teos.standardiTunnus
+WHERE eraantymisAika < datetime('now')

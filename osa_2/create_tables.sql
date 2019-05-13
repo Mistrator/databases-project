@@ -65,9 +65,9 @@ CREATE TABLE Asiakas (
 CREATE TABLE Varaus (
 	tunniste INT NOT NULL,
 	teosStandardiTunnus VARCHAR(32),
-	teosKappaleTunnus INT,
+	teosKappaleTunnus INT DEFAULT NULL,
 	varausAjankohta DATE,
-	saapumisAjankohta DATE CHECK (varausAjankohta <= saapumisAjankohta),
+	saapumisAjankohta DATE DEFAULT NULL,
 	varaajaAsiakasNro INT,
 	noutoToimipiste VARCHAR(256),
 	PRIMARY KEY (tunniste),
