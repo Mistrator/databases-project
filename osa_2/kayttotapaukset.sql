@@ -67,3 +67,32 @@ VALUES ('978-951-1-23676-4', 0, datetime('now'), (SELECT asiakasNro
 
 DELETE FROM Lainassa
 WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0;
+
+/*
+	Selvitetään, missä toimipisteissä on vapaana tietyn teoksen kappale.
+
+	Kysytään, missä toimipisteissä on Kalevalan kappale.
+*/
+SELECT DISTINCT toimipisteNimi
+FROM Toimipisteessa
+WHERE standardiTunnus = '978-951-1-23676-4';
+
+/*
+	Selvitetään, mitä teoksia asiakkaalla on lainassa tällä hetkellä ja mitkä ovat lainojen erääntymispäivät.
+
+	Kysytään, mitä lainoja Matti Meikäläisellä on tällä hetkellä.
+*/
+SELECT standardiTunnus, nimi, eraantymisAika
+FROM Lainassa NATURAL JOIN Teos
+WHERE asiakasNro = 123;
+
+/*
+	Selvitetään aikajärjestyksessä, kenellä teoksen kappale on aiemmin ollut lainassa
+	ja milloin se on palautettu.
+
+	Kysytään Kalevalan palautushistoria.
+*/
+SELECT asiakasNro, nimi, osoite, email, palautusAjankohta
+FROM Palautus NATURAL JOIN Asiakas
+WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0
+ORDER BY palautusAjankohta DESC;
