@@ -109,8 +109,77 @@ INSERT INTO Varaus (tunniste, teosStandardiTunnus, varausAjankohta, varaajaAsiak
 VALUES (12345678, '978-951-1-23676-4', datetime('now'), 123, 'Oodi')
 
 /*
-	Selvitetään, mitkä lainat ovat myöhässä ja kysytään lainaajien tiedot.
+	Selvitetään, mitkä lainat ovat myöhässä ja kysytään lainaajien henkilötiedot.
+	Lasketaan, montako päivää laina on myöhässä viimeisestä palautuspäivästä.
 */
 SELECT asiakasNro, Asiakas.nimi AS asiakasNimi, osoite, email, standardiTunnus, Teos.nimi AS teosNimi, eraantymisAika, julianday(datetime('now'))-julianday(eraantymisAika) AS pvMyohassa
 FROM (Lainassa NATURAL JOIN Asiakas) JOIN Teos ON Lainassa.standardiTunnus = Teos.standardiTunnus
 WHERE eraantymisAika < datetime('now')
+
+/*
+	Lisätään uusi myöhästymismaksu.
+
+	Lisätään Matti Meikäläiselle 3.50e suuruinen myöhästymismaksu.
+*/
+INSERT INTO Maksu (tunniste, summa, tyyppi, asiakasNro)
+VALUES (3456, 350, 'myohastyminen', 123)
+
+/*
+	Selvitetään asiakkaan maksamatta olevat maksut.
+
+	Kysytään, mitä maksuja Matti Meikäläisellä on maksamatta.
+*/
+SELECT summa, tyyppi
+FROM Maksu
+WHERE asiakasNro = 123 AND maksettu = FALSE;
+
+/*
+	Selvitetään, millä asiakkailla on varauksia tiettyyn teokseen.
+
+	Kysytään, ketkä ovat varanneet Kalevalan.
+*/
+SELECT asiakasNro, nimi, varausAjankohta
+FROM Varaus JOIN Asiakas ON varaajaAsiakasNro = asiakasNro
+WHERE teosStandardiTunnus = '978-951-1-23676-4'
+ORDER BY varausAjankohta ASC
+
+/*
+	Selvitetään, missä toimipisteissä teoksen kappaleita on ja kuinka monta.
+*/
+SELECT toimipisteNimi, COUNT(*) AS lukumaara
+FROM Toimipisteessa
+WHERE standardiTunnus = '978-951-1-23676-4'
+GROUP BY toimipisteNimi
+
+/*
+	Selvitetään, missä kuljetuksissa tietyn teoksen kappaleita on kyydissä.
+*/
+SELECT lahtoToimipiste, paateToimipiste, lahtoaika
+FROM Kuljetettavana NATURAL JOIN Kuljetus
+WHERE standardiTunnus = '978-951-1-23676-4'
+
+/*
+	Kysytään, mitä kirjoja tietyltä tekijältä on.
+*/
+SELECT nimi, julkaisuvuosi
+FROM Teos NATURAL JOIN Kirja
+WHERE tekija = 'Elias Lönnrot'
+
+/*
+	Kysytään, mitkä yksittäisen teoksen kappaleet eivät ole kotitoimipisteessä.
+*/
+SELECT kappaleTunnus
+FROM Lainassa
+WHERE standardiTunnus = '978-951-1-23676-4'
+	UNION
+SELECT kappaleTunnus
+FROM Kuljetettavana
+WHERE standardiTunnus = '978-951-1-23676-4'
+	UNION
+SELECT kappaleTunnus
+FROM Toimipisteessa
+WHERE standardiTunnus = '978-951-1-23676-4' AND toimipisteNimi != (
+	SELECT kotitoimipiste
+	FROM Kappale
+	WHERE Kappale.standardiTunnus = Toimipisteessa.standardiTunnus AND
+			Kappale.kappaleTunnus = Toimipisteessa.kappaleTunnus)
