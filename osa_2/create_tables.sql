@@ -12,7 +12,7 @@ CREATE TABLE Kappale (
 	kappaleTunnus INT NOT NULL,
 	varattavissa BOOLEAN,
 	lainattavissa BOOLEAN,
-	maxLainausaika INT NOT NULL, -- seconds
+	maxLainausaika DATE NOT NULL,
 	kotitoimipiste VARCHAR(256),
 	PRIMARY KEY (standardiTunnus, kappaleTunnus),
 	FOREIGN KEY (standardiTunnus) REFERENCES Teos(standardiTunnus),
@@ -49,7 +49,7 @@ CREATE TABLE CD (
 CREATE TABLE DVD (
 	standardiTunnus VARCHAR(32) NOT NULL,
 	julkaisija VARCHAR(256),
-	kesto INT CHECK (kesto >= 0), --seconds
+	kesto DATE,
 	PRIMARY KEY (standardiTunnus),
 	FOREIGN KEY (standardiTunnus) REFERENCES Teos(standardiTunnus)
 );
