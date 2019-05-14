@@ -62,11 +62,15 @@ VALUES ('978-951-1-23676-4', 0, TRUE, TRUE, '+30 days', 'Oodi');
 INSERT INTO Toimipisteessa
 VALUES ('978-951-1-23676-4', 0, 'Oodi');
 
+-- Kappale 1 on kuljetuksessa Vuosaaresta Kallioon
 INSERT INTO Kappale
 VALUES ('978-951-1-23676-4', 1, TRUE, TRUE, '+30 days', 'Oodi');
 
-INSERT INTO Toimipisteessa
-VALUES ('978-951-1-23676-4', 1, 'Oodi');
+INSERT INTO Kuljetus
+VALUES (456, '2019-05-12T11:30:00', 'Vuosaari', 'Kallio');
+
+INSERT INTO Kuljetettavana
+VALUES ('978-951-1-23676-4', 1, 456);
 
 INSERT INTO Kappale
 VALUES ('978-951-1-23676-4', 2, TRUE, TRUE, '+14 days', 'Oodi');
