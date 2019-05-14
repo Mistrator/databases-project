@@ -1,12 +1,12 @@
 /*
 	Kirjastosta voidaan lainata yksittäisiä teoksen kappaleita ja tapahtuma on rekisteröitävä tietokannan tarvittaviin relaatiohin.
-	Asiakas lainaa teoksen kappaleen toimipisteestä, jolloin Lainassa-relaatioon lisätään uusi monikko joka sisältää lainauksen tiedot.
+	Asiakas lainaa teoksen kappaleen toimipisteestä, jolloin Lainassa-relaatioon lisätään uusi monikko, joka sisältää lainauksen tiedot.
 	Oletetaan, että kappale on toimipisteessä ja asiakas voi lainata sen, eli
 	se on lainattavissa eikä ole varattuna kenellekään muulle.
 	Lainausajaksi asetetaan lainaushetki ja erääntymisajaksi 
 	lainaushetki + kappaleen max lainausaika.
 	Koska lainaushetkellä asiakas ottaa teoksen jostakin toimipisteestä, 
-	poistetaan tämän jälkeen kappale toimipisteessa-relaatiosta, jossa se oli.
+	poistetaan tämän jälkeen kappale Toimipisteessa-relaatiosta, jossa se oli.
 	Poistetaan myös käyttäjän mahdolliset teokseen kohdistuneet varaukset Varaus-relaatiosta.
 
 	Matti Meikäläinen lainaa yhden kappaleen Kalevalaa.
@@ -47,7 +47,7 @@ WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0;
 	Kirjaston tietokannasta halutaan selvittää, missä toimipisteissä on saatavana tietyn teoksen kappale.
 	Tämä tapahtuu kysymällä Toimipisteessa-relaatiosta niitä monikoita, joiden standarditunnus täsmää halutun teoksen standarditunnukseen.
 
-	Etsitään kaikki toimipisteet joissa on vapaana Kalevala.
+	Etsitään kaikki toimipisteet, joissa on vapaana Kalevala.
 */
 SELECT DISTINCT toimipisteNimi
 FROM Toimipisteessa
@@ -64,8 +64,7 @@ FROM Lainassa NATURAL JOIN Teos
 WHERE asiakasNro = 123;
 
 /*
-	Kirjaston on voitava selvittää aikajärjestyksessä, kenellä teoksen kappale on aiemmin ollut lainassa
-	ja milloin se on palautettu.
+	Kirjaston on voitava selvittää aikajärjestyksessä, kenellä teoksen kappale on aiemmin ollut lainassa ja milloin se on palautettu.
 	Tehdään kysely Palautus- ja Asiakas -relaatioiden luonnolliseen liitokseen ja suodatetaan tuloksesta vain haluttua teoksen kappaletta koskevat monikot.
 	Tulos järjestetään vielä lopuksi aikajärjestykseen, uusin palautus ensin.
 
@@ -147,8 +146,8 @@ FROM Kuljetettavana NATURAL JOIN Kuljetus
 WHERE standardiTunnus = '978-951-1-23676-4';
 
 /*
-	Tietokannasta voidaan hakea teoksia eri hakuehtojen mukaan.
-	Haut voidaan kohdistaa aina Teos- ja Kirja- relaatioiden luonnolliseen liitokseen.
+	Tietokannasta voidaan hakea kirjoja eri hakuehtojen mukaan.
+	Haut voidaan kohdistaa Teos- ja Kirja- relaatioiden luonnolliseen liitokseen.
 	Kysytään esimerkiksi, mitä kirjoja Elias Lönnrotilta on.
 */
 SELECT nimi, julkaisuvuosi
@@ -190,7 +189,7 @@ ORDER BY nimi;
 
 /*
 	Selvitetään jokaiselle asiakkaalle maksettujen maksujen kokonaissumma tekemällä kysely Maksu- ja Asiakas- relaatioiden luonnolliseen liitokseen ja asettamalla ehdoksi, että maksu on maksettu.
-	Ryhmitellään monikot asiakasnumeron mukaan jotta saadaan haluttu summa laskettua, ja järjestetään lopuksi monikot nimen mukaan aakkosjärjestykseen.
+	Ryhmitellään monikot asiakasnumeron mukaan, jotta saadaan haluttu summa laskettua, ja järjestetään lopuksi monikot nimen mukaan aakkosjärjestykseen.
 */
 SELECT asiakasNro, nimi, SUM(summa) AS maksettuYhteensa
 FROM Maksu NATURAL JOIN Asiakas
@@ -201,7 +200,7 @@ ORDER BY nimi;
 /*
 	Selvitetään viime kuun 10 suosituinta teosta palautusten määrän perusteella tekemällä kysely Palautus- ja Teos- relaatioiden luonnolliseen liitokseen 
 	ja asettamalla ehdoksi, että palautusajankohta on kuukauden sisällä nykyhetkestä.
-	Ryhmitellään monikot standarditunnuksen mukaan jotta saadaan haluttu lukumäärä laskettua, ja järjestetään lopuksi monikot lukumäärän mukaan laskevaan järjestykseen.
+	Ryhmitellään monikot standarditunnuksen mukaan, jotta saadaan haluttu lukumäärä laskettua, ja järjestetään lopuksi monikot lukumäärän mukaan laskevaan järjestykseen.
 	Rajoitetaan haettavien monikkojen määrä kymmeneen.
 */
 SELECT nimi, julkaisuvuosi, genre, COUNT(*) AS palautuksia
