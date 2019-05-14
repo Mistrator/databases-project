@@ -1,14 +1,18 @@
 /*
-	Lisätään uusi toimipiste.
+	Tietokantaan täytyy pystyä luomaan uusia toimipisteitä.
+	Lisätään uusi monikko Toimipiste-relaatioon.
 */
 INSERT INTO Toimipiste
 VALUES ('Oodi', 'Töölönlahdenkatu 4');
 
 
 /*
+	Tietokantaan täytyy pystyä lisäämään erilaisia teoksia ja niiden kappaleita.
 	Lisätään uusi kirja ja yksittäinen kirjan kappale.
 
-	Ensin lisätään kirjan yleiset tiedot, jonka jälkeen lisätään yksittäisen kappaleen tiedot. Tämän jälkeen lisätään kappale johonkin toimipisteeseen.
+	Ensin lisätään kirjan yleiset tiedot Teos-relaatioon, jonka jälkeen lisätään yksittäisen kappaleen tiedot Kappale-relaatioon. 
+	Koska teos on kirja, täytyy teoksen tyypille ominaiset tiedot vielä lisätä Kirja-relaatioon.
+	Tämän jälkeen asetetaan kappale johonkin toimipisteeseen lisäämällä se Toimipisteessa-relaatioon.
 */
 INSERT INTO Teos
 VALUES ('978-951-1-23676-4', 'Kalevala', 2009, 'Kaunokirjallisuus', 'suomi');
@@ -24,20 +28,23 @@ VALUES ('978-951-1-23676-4', 0, 'Oodi');
 
 
 /*
-	Lisätään uusi asiakas.
+	Tietokantaan täytyy pystyä lisäämään uusia asiakkaita.
+	Lisätään uusi monikko Asiakas-relaatioon.
 */
 INSERT INTO Asiakas
 VALUES (123, 'Matti Meikäläinen', 'Otakaari 20', 'matti.meikalainen@gmail.com');
 
 
 /*
-	Asiakas lainaa teoksen kappaleen toimipisteestä.
+	Kirjastosta voidaan lainata yksittäisiä teoksen kappaleita ja tapahtuma on rekisteröitävä tietokannan tarvittaviin relaatiohin.
+	Asiakas lainaa teoksen kappaleen toimipisteestä, jolloin Lainassa-relaatioon lisätään uusi monikko joka sisältää lainauksen tiedot.
 	Oletetaan, että kappale on toimipisteessä ja asiakas voi lainata sen, eli
 	se on lainattavissa eikä ole varattuna kenellekään muulle.
 	Lainausajaksi asetetaan lainaushetki ja erääntymisajaksi 
 	lainaushetki + kappaleen max lainausaika.
-	Poistetaan tämän jälkeen kappale toimipisteestä, jossa se oli.
-	Poistetaan myös käyttäjän mahdolliset teokseen kohdistuneet varaukset.
+	Koska lainaushetkellä asiakas ottaa teoksen jostakin toimipisteestä, 
+	poistetaan tämän jälkeen kappale toimipisteessa-relaatiosta, jossa se oli.
+	Poistetaan myös käyttäjän mahdolliset teokseen kohdistuneet varaukset Varaus-relaatiosta.
 
 	Matti Meikäläinen lainaa yhden kappaleen Kalevalaa.
 */
@@ -55,8 +62,10 @@ DELETE FROM Varaus
 WHERE teosStandardiTunnus = '978-951-1-23676-4' AND varaajaAsiakasNro = 123;
 
 /*
-	Asiakas palauttaa teoksen kappaleen johonkin toimipisteeseen.
-	Lisätään kappale palautustoimipisteeseen, poistetaan kappale Lainassa-relaatiosta ja tallennetaan tieto palautustapahtumasta.
+	Lainattuja teoksia on voitava palauttaa, jolloin palautustapahtuman tiedot kirjataan tietokantaan.
+	Palautushistoria tallentuu Palautus-relaatioon, sillä sen sisältämiä monikoita ei poisteta.
+	Asiakas palauttaa teoksen kappaleen johonkin toimipisteeseen, jolloin kappale lisätään takaisin Toimipisteessa-relaatioon.
+	Tämän jälkeen tallennetaan tieto palautustapahtumasta Palautus-relaatioon ja poistetaan kappale Lainassa-relaatiosta.
 
 	Matti Meikäläinen palauttaa lainatun Kalevalan kappaleen Oodiin.
 */
@@ -72,16 +81,18 @@ DELETE FROM Lainassa
 WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0;
 
 /*
-	Selvitetään, missä toimipisteissä on vapaana tietyn teoksen kappale.
+	Kirjaston tietokannasta halutaan selvittää, missä toimipisteissä on saatavana tietyn teoksen kappale.
+	Tämä tapahtuu kysymällä Toimipisteessa-relaatiosta niitä monikoita, joiden standarditunnus täsmää halutun teoksen standarditunnukseen.
 
-	Kysytään, missä toimipisteissä on Kalevalan kappale.
+	Etsitään kaikki toimipisteet joissa on vapaana Kalevala.
 */
 SELECT DISTINCT toimipisteNimi
 FROM Toimipisteessa
 WHERE standardiTunnus = '978-951-1-23676-4';
 
 /*
-	Selvitetään, mitä teoksia asiakkaalla on lainassa tällä hetkellä ja mitkä ovat lainojen erääntymispäivät.
+	Halutaan selvittää, mitä teoksia yksittäisellä asiakkaalla on lainassa tällä hetkellä ja mitkä ovat lainojen erääntymispäivät
+	Tämä tapahtuu tekemällä kysely Lainassa- ja Teos -relaatioiden luonnolliseen liitokseen ja suodattamalla tuloksesta vain halutun asiakasnumeron omaavat monikot.
 
 	Kysytään, mitä lainoja Matti Meikäläisellä on tällä hetkellä.
 */
@@ -90,8 +101,10 @@ FROM Lainassa NATURAL JOIN Teos
 WHERE asiakasNro = 123;
 
 /*
-	Selvitetään aikajärjestyksessä, kenellä teoksen kappale on aiemmin ollut lainassa
+	Kirjaston on voitava selvittää aikajärjestyksessä, kenellä teoksen kappale on aiemmin ollut lainassa
 	ja milloin se on palautettu.
+	Tehdään kysely Palautus- ja Asiakas -relaatioiden luonnolliseen liitokseen ja suodatetaan tuloksesta vain haluttua teoksen kappaletta koskevat monikot.
+	Tulos järjestetään vielä lopuksi aikajärjestykseen, uusin palautus ensin.
 
 	Kysytään Kalevalan palautushistoria.
 */
@@ -101,7 +114,8 @@ WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0
 ORDER BY palautusAjankohta DESC;
 
 /*
-	Tehdään uusi teokseen kohdistuva varaus.
+	Kirjaston teoksista halutaan tehdä varauksia, jotta asiakas voi noutaa teoksen lähimmästä toimipisteestään.
+	Tehdään uusi teokseen kohdistuva varaus lisäämällä uusi monikko Varaus-relaatioon.
 
 	Matti Meikäläinen varaa kappaleen Kalevalaa toimitettavaksi Oodiin.
 */
@@ -109,15 +123,17 @@ INSERT INTO Varaus (tunniste, teosStandardiTunnus, varausAjankohta, varaajaAsiak
 VALUES (12345678, '978-951-1-23676-4', datetime('now'), 123, 'Oodi')
 
 /*
-	Selvitetään, mitkä lainat ovat myöhässä ja kysytään lainaajien henkilötiedot.
-	Lasketaan, montako päivää laina on myöhässä viimeisestä palautuspäivästä.
+	Halutaan selvittää, mitkä lainat ovat myöhässä ja kysytään lainaajien henkilötiedot.
+	Tehdään Lainassa-, Asiakas- ja Teos- relaatioiden luonnolliseen liitokseen kysely, josta suodatetaan näytettäväksi vain ne lainat, joiden erääntymisaika on ennen nykyhetkeä.
+	Lasketaan myös, montako päivää laina on myöhässä viimeisestä palautuspäivästä ja näytetään tieto omana sarakkeena.
 */
 SELECT asiakasNro, Asiakas.nimi AS asiakasNimi, osoite, email, standardiTunnus, Teos.nimi AS teosNimi, eraantymisAika, julianday(datetime('now'))-julianday(eraantymisAika) AS pvMyohassa
 FROM (Lainassa NATURAL JOIN Asiakas) JOIN Teos ON Lainassa.standardiTunnus = Teos.standardiTunnus
 WHERE eraantymisAika < datetime('now')
 
 /*
-	Lisätään uusi myöhästymismaksu.
+	Tietokantaan voidaan lisätä uusia maksuja asiakkaille. Tälläisiä voivat olla esimerkiksi myöhästymis- ja varausmaksut.
+	Lisätään uusi monikko Maksu-relaatioon.
 
 	Lisätään Matti Meikäläiselle 3.50e suuruinen myöhästymismaksu.
 */
@@ -125,7 +141,8 @@ INSERT INTO Maksu (tunniste, summa, tyyppi, asiakasNro)
 VALUES (3456, 350, 'myohastyminen', 123)
 
 /*
-	Selvitetään asiakkaan maksamatta olevat maksut.
+	Tietokannasta voidaan selvittää asiakkaan maksamatta olevat maksut
+	Tämä tapahtuu tekemällä Maksu-relaatioon kysely, jossa ehtona on, että maksua ei ole maksettu ja monikon asiakasnumero täsmää.
 
 	Kysytään, mitä maksuja Matti Meikäläisellä on maksamatta.
 */
@@ -134,7 +151,10 @@ FROM Maksu
 WHERE asiakasNro = 123 AND maksettu = FALSE;
 
 /*
-	Selvitetään, millä asiakkailla on varauksia tiettyyn teokseen.
+	Halutaan selvittää asiakkaat, joilla on varauksia tiettyyn teokseen.
+	Tämä voidaan selvittää tekemällä kysely Varaus- ja Asiakas- relaatioiden liitokseen määrittämällä ehdoksi, että teoksen standarditunnuksen on
+	täsmättävä haettuun teokseen.
+	Järjestetään lopuksi monikot varausajankohdan mukaan.
 
 	Kysytään, ketkä ovat varanneet Kalevalan.
 */
@@ -145,6 +165,10 @@ ORDER BY varausAjankohta ASC
 
 /*
 	Selvitetään, missä toimipisteissä teoksen kappaleita on ja kuinka monta.
+	Tehdään kysely Toimipisteessa-relaatioon ja määritetään kyselyn ehdoksi, että teoksen standarditunnuksen on täsmättävä haetun teoksen kanssa.
+	Ryhmitellään monikot toimipisteen nimen mukaan, jotta saadaan selville haluttu lukumäärä.
+
+	Kysytään, kuinka monta kappaletta Kalevalaa on kussakin toimipisteessä.
 */
 SELECT toimipisteNimi, COUNT(*) AS lukumaara
 FROM Toimipisteessa
@@ -153,19 +177,23 @@ GROUP BY toimipisteNimi
 
 /*
 	Selvitetään, missä kuljetuksissa tietyn teoksen kappaleita on kyydissä.
+	Tehdään kysely Kuljetettavana- ja Kuljetus-relaatioiden luonnolliseen liitokseen ja määritellään ehdoksi, että stardarditunnuksen tulee täsmätä haetun teoksen kanssa.
 */
 SELECT lahtoToimipiste, paateToimipiste, lahtoaika
 FROM Kuljetettavana NATURAL JOIN Kuljetus
 WHERE standardiTunnus = '978-951-1-23676-4'
 
 /*
-	Kysytään, mitä kirjoja tietyltä tekijältä on.
+	Tietokannasta voidaan hakea teoksia eri hakuehtojen mukaan.
+	Haut voidaan kohdistaa aina Teos- ja Kirja- relaatioiden luonnolliseen liitokseen.
+	Kysytään esimerkiksi, mitä kirjoja Elias Lönnrotilta on.
 */
 SELECT nimi, julkaisuvuosi
 FROM Teos NATURAL JOIN Kirja
 WHERE tekija = 'Elias Lönnrot'
 
 /*
+	Teoksen kappaleiden olinpaikan selvitys voidaan toteuttaa etsimällä kappaleita 
 	Kysytään, mitkä yksittäisen teoksen kappaleet eivät ole kotitoimipisteessä, vaan toisessa toimipisteessa, kuljetuksessa tai lainassa.
 */
 SELECT kappaleTunnus
