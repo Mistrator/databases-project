@@ -15,7 +15,7 @@
 
 \begin {document}
 
-\title {Tietokannat - harjoitustyö (osa 1)}
+\title {Tietokannat - harjoitustyö (osa 2)}
 \author {Miska Kananen (652102, miska.kananen@aalto.fi) \\ Teemu Mäkinen (628835, teemu.v.makinen@aalto.fi)}
 \date {\today}
 \maketitle
@@ -27,27 +27,23 @@
 \section {Relaatiokaavio}
 
 \begin{itemize}
-	\item \texttt{Teos(\underline{standardiTunnus}, \underline{kappaleTunnus}, nimi, varattavissa, lainattavissa, maxLainausaika, julkaisuvuosi, genre, kieli)}
-	\item \texttt{Kirja(\underline{standardiTunnus}, \underline{kappaleTunnus}, tekija, kustantaja, sivumaara)}
-	\item \texttt{Lehti(\underline{standardiTunnus}, \underline{kappaleTunnus}, julkaisija, vuosikerta, numero)}
-	\item \texttt{CD(\underline{standardiTunnus}, \underline{kappaleTunnus}, artisti, kappaleMaara, levyYhtio)}
-	\item \texttt{DVD(\underline{standardiTunnus}, \underline{kappaleTunnus}, julkaisija, kesto)}
+	\item \texttt{Teos(\underline{standardiTunnus}, nimi, julkaisuvuosi, genre, kieli)}
+	\item \texttt{Kappale(\underline{standardiTunnus}, \underline{kappaleTunnus}, varattavissa, lainattavissa, maxLainausaika, kotitoimipiste)}
+	\item \texttt{Kirja(\underline{standardiTunnus}, tekija, kustantaja, sivumaara)}
+	\item \texttt{Lehti(\underline{standardiTunnus}, julkaisija, vuosikerta, numero)}
+	\item \texttt{CD(\underline{standardiTunnus}, artisti, kappaleMaara, levyYhtio)}
+	\item \texttt{DVD(\underline{standardiTunnus}, julkaisija, kesto)}
 	\item \texttt{Asiakas(\underline{asiakasNro}, nimi, osoite, email)}
-	\item \texttt{Varaus(\underline{tunniste}, teosStandardiTunnus, varausAjankohta, saapumisAjankohta, teosKappaleTunnus)}
-	\item \texttt{Palautus(\underline{standardiTunnus}, \underline{kappaleTunnus}, \underline{asiakasNro}, \underline{palautusAjankohta})}
-	\item \texttt{Maksu(\underline{tunniste}, summa, tyyppi, maksettu)}
+	\item \texttt{Varaus(\underline{tunniste}, teosStandardiTunnus, teosKappaleTunnus, varausAjankohta, saapumisAjankohta, varaajaAsiakasNro, noutoToimipiste)}
+	\item \texttt{Palautus(\underline{standardiTunnus}, \underline{kappaleTunnus}, \underline{palautusAjankohta}, asiakasNro)}
+	\item \texttt{Maksu(\underline{tunniste}, summa, tyyppi, maksettu, asiakasNro)}
 	\item \texttt{Toimipiste(\underline{nimi}, osoite)}
-	\item \texttt{Kuljetus(\underline{kuljetusID}, lahtoaika)}
+	\item \texttt{Kuljetus(\underline{kuljetusID}, lahtoaika, lahtoToimipiste, paateToimipiste)}
 \end{itemize}
 
 \begin{itemize}
-	\item \texttt{Lainassa(\underline{standardiTunnus}, \underline{kappaleTunnus}, asiakasNro, lainausAika, eraantymisAika)}
-	\item \texttt{Maksut(\underline{maksuTunniste}, asiakasNro)}
-	\item \texttt{Varannut(\underline{varausTunniste}, asiakasNro)}
-	\item \texttt{Noutopaikka(\underline{varausTunniste}, toimipisteNimi)}
+	\item \texttt{Lainassa(\underline{standardiTunnus}, \underline{kappaleTunnus}, lainausAika, eraantymisAika, asiakasNro)}
 	\item \texttt{Toimipisteessa(\underline{standardiTunnus}, \underline{kappaleTunnus}, toimipisteNimi)}
-	\item \texttt{Kotitoimipiste(\underline{standardiTunnus}, \underline{kappaleTunnus}, toimipisteNimi)}
-	\item \texttt{Paatepisteet(\underline{kuljetusID}, lahtoToimipiste, paateToimipiste)}
 	\item \texttt{Kuljetettavana(\underline{standardiTunnus}, \underline{kappaleTunnus}, kuljetusID)}
 \end{itemize}
 
@@ -148,29 +144,6 @@ Muutetaan \texttt{Palautus}-relaation avainta: asiakasnumeron ei tarvitse olla a
 Erotetaan teoksen yleiset ja kappalekohtaiset tiedot kahdeksi eri relaatioksi \texttt{Teos} ja \texttt{Kappale}. Relaatio on tällöin BCNF:ssä.
 
 Poistetaan kappaletunnus relaatioista \texttt{Kirja}, \texttt{Lehti}, \texttt{CD} ja \texttt{DVD}. Tällöin relaatiot ovat BCNF:ssä.
-
-Uusi relaatiokaavio on:
-
-\begin{itemize}
-	\item \texttt{Teos(\underline{standardiTunnus}, nimi, julkaisuvuosi, genre, kieli)}
-	\item \texttt{Kappale(\underline{standardiTunnus}, \underline{kappaleTunnus}, varattavissa, lainattavissa, maxLainausaika, kotitoimipiste)}
-	\item \texttt{Kirja(\underline{standardiTunnus}, tekija, kustantaja, sivumaara)}
-	\item \texttt{Lehti(\underline{standardiTunnus}, julkaisija, vuosikerta, numero)}
-	\item \texttt{CD(\underline{standardiTunnus}, artisti, kappaleMaara, levyYhtio)}
-	\item \texttt{DVD(\underline{standardiTunnus}, julkaisija, kesto)}
-	\item \texttt{Asiakas(\underline{asiakasNro}, nimi, osoite, email)}
-	\item \texttt{Varaus(\underline{tunniste}, teosStandardiTunnus, teosKappaleTunnus, varausAjankohta, saapumisAjankohta, varaajaAsiakasNro, noutoToimipiste)}
-	\item \texttt{Palautus(\underline{standardiTunnus}, \underline{kappaleTunnus}, \underline{palautusAjankohta}, asiakasNro)}
-	\item \texttt{Maksu(\underline{tunniste}, summa, tyyppi, maksettu, asiakasNro)}
-	\item \texttt{Toimipiste(\underline{nimi}, osoite)}
-	\item \texttt{Kuljetus(\underline{kuljetusID}, lahtoaika, lahtoToimipiste, paateToimipiste)}
-\end{itemize}
-
-\begin{itemize}
-	\item \texttt{Lainassa(\underline{standardiTunnus}, \underline{kappaleTunnus}, lainausAika, eraantymisAika, asiakasNro)}
-	\item \texttt{Toimipisteessa(\underline{standardiTunnus}, \underline{kappaleTunnus}, toimipisteNimi)}
-	\item \texttt{Kuljetettavana(\underline{standardiTunnus}, \underline{kappaleTunnus}, kuljetusID)}
-\end{itemize}
 
 \section {Tietokannan luominen}
 
