@@ -83,7 +83,7 @@ ORDER BY palautusAjankohta DESC;
 	Matti Meikäläinen varaa kappaleen Kalevalaa toimitettavaksi Oodiin.
 */
 INSERT INTO Varaus (tunniste, teosStandardiTunnus, varausAjankohta, varaajaAsiakasNro, noutoToimipiste)
-VALUES (12345678, '978-951-1-23676-4', datetime('now'), 123, 'Oodi')
+VALUES (12345678, '978-951-1-23676-4', datetime('now'), 123, 'Oodi');
 
 /*
 	Halutaan selvittää, mitkä lainat ovat myöhässä ja kysytään lainaajien henkilötiedot.
@@ -92,7 +92,7 @@ VALUES (12345678, '978-951-1-23676-4', datetime('now'), 123, 'Oodi')
 */
 SELECT asiakasNro, Asiakas.nimi AS asiakasNimi, osoite, email, standardiTunnus, Teos.nimi AS teosNimi, eraantymisAika, julianday(datetime('now'))-julianday(eraantymisAika) AS pvMyohassa
 FROM (Lainassa NATURAL JOIN Asiakas) JOIN Teos ON Lainassa.standardiTunnus = Teos.standardiTunnus
-WHERE eraantymisAika < datetime('now')
+WHERE eraantymisAika < datetime('now');
 
 /*
 	Tietokantaan voidaan lisätä uusia maksuja asiakkaille. Tälläisiä voivat olla esimerkiksi myöhästymis- ja varausmaksut.
@@ -101,7 +101,7 @@ WHERE eraantymisAika < datetime('now')
 	Lisätään Matti Meikäläiselle 3.50e suuruinen myöhästymismaksu.
 */
 INSERT INTO Maksu (tunniste, summa, tyyppi, asiakasNro)
-VALUES (3456, 350, 'myohastyminen', 123)
+VALUES (3456, 350, 'myohastyminen', 123);
 
 /*
 	Tietokannasta voidaan selvittää asiakkaan maksamatta olevat maksut
@@ -124,7 +124,7 @@ WHERE asiakasNro = 123 AND maksettu = FALSE;
 SELECT asiakasNro, nimi, varausAjankohta
 FROM Varaus JOIN Asiakas ON varaajaAsiakasNro = asiakasNro
 WHERE teosStandardiTunnus = '978-951-1-23676-4'
-ORDER BY varausAjankohta ASC
+ORDER BY varausAjankohta ASC;
 
 /*
 	Selvitetään, missä toimipisteissä teoksen kappaleita on ja kuinka monta.
@@ -136,7 +136,7 @@ ORDER BY varausAjankohta ASC
 SELECT toimipisteNimi, COUNT(*) AS lukumaara
 FROM Toimipisteessa
 WHERE standardiTunnus = '978-951-1-23676-4'
-GROUP BY toimipisteNimi
+GROUP BY toimipisteNimi;
 
 /*
 	Selvitetään, missä kuljetuksissa tietyn teoksen kappaleita on kyydissä.
@@ -144,7 +144,7 @@ GROUP BY toimipisteNimi
 */
 SELECT lahtoToimipiste, paateToimipiste, lahtoaika
 FROM Kuljetettavana NATURAL JOIN Kuljetus
-WHERE standardiTunnus = '978-951-1-23676-4'
+WHERE standardiTunnus = '978-951-1-23676-4';
 
 /*
 	Tietokannasta voidaan hakea teoksia eri hakuehtojen mukaan.
@@ -153,7 +153,7 @@ WHERE standardiTunnus = '978-951-1-23676-4'
 */
 SELECT nimi, julkaisuvuosi
 FROM Teos NATURAL JOIN Kirja
-WHERE tekija = 'Elias Lönnrot'
+WHERE tekija = 'Elias Lönnrot';
 
 /*
 	Teoksen kappaleiden olinpaikan selvitys voidaan toteuttaa etsimällä kappaleita Lainassa-, Kuljetettavana- ja Toimipisteessa- relaatioista.
@@ -173,7 +173,7 @@ WHERE standardiTunnus = '978-951-1-23676-4' AND toimipisteNimi != (
 	SELECT kotitoimipiste
 	FROM Kappale
 	WHERE Kappale.standardiTunnus = Toimipisteessa.standardiTunnus AND
-			Kappale.kappaleTunnus = Toimipisteessa.kappaleTunnus)
+			Kappale.kappaleTunnus = Toimipisteessa.kappaleTunnus);
 
 
 /*
@@ -185,7 +185,7 @@ SELECT asiakasNro, nimi, COUNT(*) AS palautuksia
 FROM Palautus NATURAL JOIN Asiakas
 WHERE palautusAjankohta > (datetime('now', '-1 year'))
 GROUP BY asiakasNro
-ORDER BY nimi
+ORDER BY nimi;
 
 
 /*
@@ -196,7 +196,7 @@ SELECT asiakasNro, nimi, SUM(summa) AS maksettuYhteensa
 FROM Maksu NATURAL JOIN Asiakas
 WHERE maksettu = TRUE
 GROUP BY asiakasNro
-ORDER BY nimi
+ORDER BY nimi;
 
 /*
 	Selvitetään viime kuun 10 suosituinta teosta palautusten määrän perusteella tekemällä kysely Palautus- ja Teos- relaatioiden luonnolliseen liitokseen 
@@ -209,4 +209,4 @@ FROM Palautus NATURAL JOIN Teos
 WHERE palautusAjankohta > (datetime('now', '-1 month'))
 GROUP BY standardiTunnus
 ORDER BY palautuksia DESC
-LIMIT 10
+LIMIT 10;
