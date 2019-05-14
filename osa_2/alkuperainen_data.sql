@@ -101,6 +101,17 @@ INSERT INTO Maksu (tunniste, summa, tyyppi, asiakasNro)
 VALUES (3457, 100, 'varaus', 123);
 
 INSERT INTO Maksu (tunniste, summa, tyyppi, asiakasNro)
-VALUES (3456, 350, 'myohastyminen', 111);
+VALUES (3458, 350, 'myohastyminen', 111);
 
--- Lisätään tietokantaan myös maksu, joka on jo maksettu
+-- Lisätään tietokantaan myös maksuja, jotka on jo maksettu
+INSERT INTO Maksu
+VALUES (3459, 250, 'myohastyminen', TRUE, 111);
+
+INSERT INTO Maksu
+VALUES (3460, 550, 'myohastyminen', TRUE, 123);
+
+INSERT INTO Maksu
+VALUES (3461, 150, 'varaus', TRUE, 982);
+
+INSERT INTO Maksu
+VALUES (3462, 250, 'myohastyminen', TRUE, 982);
