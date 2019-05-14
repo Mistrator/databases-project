@@ -1,41 +1,4 @@
 /*
-	Tietokantaan täytyy pystyä luomaan uusia toimipisteitä.
-	Lisätään uusi monikko Toimipiste-relaatioon.
-*/
-INSERT INTO Toimipiste
-VALUES ('Oodi', 'Töölönlahdenkatu 4');
-
-
-/*
-	Tietokantaan täytyy pystyä lisäämään erilaisia teoksia ja niiden kappaleita.
-	Lisätään uusi kirja ja yksittäinen kirjan kappale.
-
-	Ensin lisätään kirjan yleiset tiedot Teos-relaatioon, jonka jälkeen lisätään yksittäisen kappaleen tiedot Kappale-relaatioon. 
-	Koska teos on kirja, täytyy teoksen tyypille ominaiset tiedot vielä lisätä Kirja-relaatioon.
-	Tämän jälkeen asetetaan kappale johonkin toimipisteeseen lisäämällä se Toimipisteessa-relaatioon.
-*/
-INSERT INTO Teos
-VALUES ('978-951-1-23676-4', 'Kalevala', 2009, 'Kaunokirjallisuus', 'suomi');
-
-INSERT INTO Kirja
-VALUES ('978-951-1-23676-4', 'Elias Lönnrot', 'Otava', 475);
-
-INSERT INTO Kappale
-VALUES ('978-951-1-23676-4', 0, TRUE, TRUE, '+30 days', 'Oodi');
-
-INSERT INTO Toimipisteessa
-VALUES ('978-951-1-23676-4', 0, 'Oodi');
-
-
-/*
-	Tietokantaan täytyy pystyä lisäämään uusia asiakkaita.
-	Lisätään uusi monikko Asiakas-relaatioon.
-*/
-INSERT INTO Asiakas
-VALUES (123, 'Matti Meikäläinen', 'Otakaari 20', 'matti.meikalainen@gmail.com');
-
-
-/*
 	Kirjastosta voidaan lainata yksittäisiä teoksen kappaleita ja tapahtuma on rekisteröitävä tietokannan tarvittaviin relaatiohin.
 	Asiakas lainaa teoksen kappaleen toimipisteestä, jolloin Lainassa-relaatioon lisätään uusi monikko joka sisältää lainauksen tiedot.
 	Oletetaan, että kappale on toimipisteessä ja asiakas voi lainata sen, eli
@@ -193,8 +156,8 @@ FROM Teos NATURAL JOIN Kirja
 WHERE tekija = 'Elias Lönnrot'
 
 /*
-	Teoksen kappaleiden olinpaikan selvitys voidaan toteuttaa etsimällä kappaleita 
-	Kysytään, mitkä yksittäisen teoksen kappaleet eivät ole kotitoimipisteessä, vaan toisessa toimipisteessa, kuljetuksessa tai lainassa.
+	Teoksen kappaleiden olinpaikan selvitys voidaan toteuttaa etsimällä kappaleita Lainassa-, Kuljetettavana- ja Toimipisteessa- relaatioista.
+	Kysytään esimerkiksi, mitkä yksittäiset Kalevalan kappaleet eivät ole kotitoimipisteessä, vaan toisessa toimipisteessa, kuljetuksessa tai lainassa.
 */
 SELECT kappaleTunnus
 FROM Lainassa
@@ -215,7 +178,8 @@ WHERE standardiTunnus = '978-951-1-23676-4' AND toimipisteNimi != (
 
 /*
 	Selvitetään jokaiselle asiakkaalle viimeisen vuoden aikana
-	palautettujen lainojen määrä.
+	palautettujen lainojen määrä tekemällä kysely Palautus- ja Asiakas- relaatioiden luonnolliseen liitokseen ja asettamalla ehdoksi, että palautusajankohta on ollut vuoden sisällä nykyhetkestä.
+	Ryhmitellään monikot asiakasnumeron mukaan jotta saadaan haluttu lukumäärä laskettua, ja järjestetään lopuksi monikot nimen mukaan aakkosjärjestykseen.
 */
 SELECT asiakasNro, nimi, COUNT(*) AS palautuksia
 FROM Palautus NATURAL JOIN Asiakas
@@ -225,7 +189,8 @@ ORDER BY nimi
 
 
 /*
-	Selvitetään jokaiselle asiakkaalle maksettujen maksujen kokonaissumma.
+	Selvitetään jokaiselle asiakkaalle maksettujen maksujen kokonaissumma tekemällä kysely Maksu- ja Asiakas- relaatioiden luonnolliseen liitokseen ja asettamalla ehdoksi, että maksu on maksettu.
+	Ryhmitellään monikot asiakasnumeron mukaan jotta saadaan haluttu summa laskettua, ja järjestetään lopuksi monikot nimen mukaan aakkosjärjestykseen.
 */
 SELECT asiakasNro, nimi, SUM(summa) AS maksettuYhteensa
 FROM Maksu NATURAL JOIN Asiakas
@@ -234,7 +199,10 @@ GROUP BY asiakasNro
 ORDER BY nimi
 
 /*
-	Selvitetään viime kuun 10 suosituinta teosta palautusten määrän perusteella.
+	Selvitetään viime kuun 10 suosituinta teosta palautusten määrän perusteella tekemällä kysely Palautus- ja Teos- relaatioiden luonnolliseen liitokseen 
+	ja asettamalla ehdoksi, että palautusajankohta on kuukauden sisällä nykyhetkestä.
+	Ryhmitellään monikot standarditunnuksen mukaan jotta saadaan haluttu lukumäärä laskettua, ja järjestetään lopuksi monikot lukumäärän mukaan laskevaan järjestykseen.
+	Rajoitetaan haettavien monikkojen määrä kymmeneen.
 */
 SELECT nimi, julkaisuvuosi, genre, COUNT(*) AS palautuksia
 FROM Palautus NATURAL JOIN Teos
