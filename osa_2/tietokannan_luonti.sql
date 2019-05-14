@@ -16,6 +16,7 @@ CREATE TABLE Teos (
 	Kappaletunnus yksilöi teoksen kappaleen ja voi olla esimerkiksi juokseva
 	numerointi.
 	MaxLainausaika on ajanjakso, esimerkiksi '1 month'.
+	Kotitoimipiste on toimipisteen nimi.
 
 	Teoksen ja kotitoimipisteen, joihin kappale viittaa, on oltava olemassa.
 */
@@ -79,6 +80,9 @@ CREATE TABLE DVD (
 	FOREIGN KEY (standardiTunnus) REFERENCES Teos(standardiTunnus)
 );
 
+/*
+	Asiakasnumero voi olla esim. juokseva numerointi.
+*/
 CREATE TABLE Asiakas (
 	asiakasNro INT NOT NULL,
 	nimi VARCHAR(256),
@@ -114,7 +118,7 @@ CREATE TABLE Varaus (
 	voi palauttaa samaa kappaletta samalla hetkellä. Sama asiakas voi palauttaa saman
 	teoksen useasti, koska palautusAjankohta on avainattribuutti.
 
-	Taulu säilyttää lainaushistoriaa, eikä sen monikkoja ole normaalisti tarkoitus poistaa.
+	Taulu säilyttää lainaushistorian, eikä sen monikkoja ole normaalisti tarkoitus poistaa.
 */
 CREATE TABLE Palautus (
 	standardiTunnus VARCHAR(32),
