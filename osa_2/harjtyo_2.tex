@@ -11,7 +11,7 @@
 
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
-\lstset{basicstyle=\ttfamily\footnotesize, keywordstyle=\color{blue}, commentstyle=\color{green}, breaklines=true, numbers=left, frame=single}
+\lstset{basicstyle=\ttfamily\footnotesize, keywordstyle=\color{blue}, commentstyle=\color{green}, breaklines=true, numbers=left, frame=single, literate={ö}{{\"o}}1{ä}{{\"a}}1}
 
 \begin {document}
 
@@ -172,9 +172,13 @@ Uusi relaatiokaavio on:
 	\item \texttt{Kuljetettavana(\underline{standardiTunnus}, \underline{kappaleTunnus}, kuljetusID)}
 \end{itemize}
 
-\section {Taulujen luominen}
+\section {Tietokannan luominen}
 
 \lstinputlisting[language=SQL]{create_tables.sql}
+
+\section {Hakemistot ja näkymät}
+
+\lstinputlisting[language=SQL]{hakemistot_nakymat.sql}
 
 \section {Käyttötapaukset}
 
