@@ -72,7 +72,7 @@ INSERT INTO Kappale
 VALUES ('978-951-1-23676-4', 2, TRUE, TRUE, '+14 days', 'Oodi');
 
 INSERT INTO Toimipisteessa
-VALUES ('978-951-1-23676-4', 2, 'Oodi');
+VALUES ('978-951-1-23676-4', 2, 'Vuosaari');
 
 
 -- Lisätään kaksi kappaletta Matrix Algebraa
@@ -85,8 +85,9 @@ VALUES ('111-951-1-23676-4', 0, 'Vuosaari');
 INSERT INTO Kappale
 VALUES ('111-951-1-23676-4', 1, TRUE, TRUE, '+30 days', 'Vuosaari');
 
-INSERT INTO Toimipisteessa
-VALUES ('111-951-1-23676-4', 1, 'Vuosaari');
+-- Toinen kappale on lainassa Tero Teekkarilla ja laina on myöhässä
+INSERT INTO Lainassa
+VALUES ('111-951-1-23676-4', 1, '2017-11-07', '2018-01-21', 982);
 
 /*
 	Tietokantaan voidaan lisätä uusia maksuja asiakkaille. Tälläisiä voivat olla esimerkiksi myöhästymis- ja varausmaksut.

@@ -25,6 +25,16 @@ DELETE FROM Varaus
 WHERE teosStandardiTunnus = '978-951-1-23676-4' AND varaajaAsiakasNro = 123;
 
 /*
+	Halutaan selvittää, mitä teoksia yksittäisellä asiakkaalla on lainassa tällä hetkellä ja mitkä ovat lainojen erääntymispäivät
+	Tämä tapahtuu tekemällä kysely Lainassa- ja Teos -relaatioiden luonnolliseen liitokseen ja suodattamalla tuloksesta vain halutun asiakasnumeron omaavat monikot.
+
+	Kysytään, mitä lainoja Matti Meikäläisellä on tällä hetkellä.
+*/
+SELECT standardiTunnus, nimi, eraantymisAika
+FROM Lainassa NATURAL JOIN Teos
+WHERE asiakasNro = 123;
+
+/*
 	Lainattuja teoksia on voitava palauttaa, jolloin palautustapahtuman tiedot kirjataan tietokantaan.
 	Palautushistoria tallentuu Palautus-relaatioon, sillä sen sisältämiä monikoita ei poisteta.
 	Asiakas palauttaa teoksen kappaleen johonkin toimipisteeseen, jolloin kappale lisätään takaisin Toimipisteessa-relaatioon.
@@ -52,16 +62,6 @@ WHERE standardiTunnus = '978-951-1-23676-4' AND kappaleTunnus = 0;
 SELECT DISTINCT toimipisteNimi
 FROM Toimipisteessa
 WHERE standardiTunnus = '978-951-1-23676-4';
-
-/*
-	Halutaan selvittää, mitä teoksia yksittäisellä asiakkaalla on lainassa tällä hetkellä ja mitkä ovat lainojen erääntymispäivät
-	Tämä tapahtuu tekemällä kysely Lainassa- ja Teos -relaatioiden luonnolliseen liitokseen ja suodattamalla tuloksesta vain halutun asiakasnumeron omaavat monikot.
-
-	Kysytään, mitä lainoja Matti Meikäläisellä on tällä hetkellä.
-*/
-SELECT standardiTunnus, nimi, eraantymisAika
-FROM Lainassa NATURAL JOIN Teos
-WHERE asiakasNro = 123;
 
 /*
 	Kirjaston on voitava selvittää aikajärjestyksessä, kenellä teoksen kappale on aiemmin ollut lainassa ja milloin se on palautettu.
@@ -97,10 +97,10 @@ WHERE eraantymisAika < datetime('now');
 	Tietokantaan voidaan lisätä uusia maksuja asiakkaille. Tälläisiä voivat olla esimerkiksi myöhästymis- ja varausmaksut.
 	Lisätään uusi monikko Maksu-relaatioon.
 
-	Lisätään Matti Meikäläiselle 3.50e suuruinen myöhästymismaksu.
+	Lisätään Matti Meikäläiselle 4.00e suuruinen myöhästymismaksu.
 */
 INSERT INTO Maksu (tunniste, summa, tyyppi, asiakasNro)
-VALUES (3456, 350, 'myohastyminen', 123);
+VALUES (9876, 400, 'myohastyminen', 123);
 
 /*
 	Tietokannasta voidaan selvittää asiakkaan maksamatta olevat maksut
