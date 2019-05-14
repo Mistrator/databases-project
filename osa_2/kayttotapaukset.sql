@@ -166,7 +166,7 @@ FROM Teos NATURAL JOIN Kirja
 WHERE tekija = 'Elias Lönnrot'
 
 /*
-	Kysytään, mitkä yksittäisen teoksen kappaleet eivät ole kotitoimipisteessä.
+	Kysytään, mitkä yksittäisen teoksen kappaleet eivät ole kotitoimipisteessä, vaan toisessa toimipisteessa, kuljetuksessa tai lainassa.
 */
 SELECT kappaleTunnus
 FROM Lainassa
@@ -183,3 +183,34 @@ WHERE standardiTunnus = '978-951-1-23676-4' AND toimipisteNimi != (
 	FROM Kappale
 	WHERE Kappale.standardiTunnus = Toimipisteessa.standardiTunnus AND
 			Kappale.kappaleTunnus = Toimipisteessa.kappaleTunnus)
+
+
+/*
+	Selvitetään jokaiselle asiakkaalle viimeisen vuoden aikana
+	palautettujen lainojen määrä.
+*/
+SELECT asiakasNro, nimi, COUNT(*) AS palautuksia
+FROM Palautus NATURAL JOIN Asiakas
+WHERE palautusAjankohta > (datetime('now', '-1 year'))
+GROUP BY asiakasNro
+ORDER BY nimi
+
+
+/*
+	Selvitetään jokaiselle asiakkaalle maksettujen maksujen kokonaissumma.
+*/
+SELECT asiakasNro, nimi, SUM(summa) AS maksettuYhteensa
+FROM Maksu NATURAL JOIN Asiakas
+WHERE maksettu = TRUE
+GROUP BY asiakasNro
+ORDER BY nimi
+
+/*
+	Selvitetään viime kuun 10 suosituinta teosta palautusten määrän perusteella.
+*/
+SELECT nimi, julkaisuvuosi, genre, COUNT(*) AS palautuksia
+FROM Palautus NATURAL JOIN Teos
+WHERE palautusAjankohta > (datetime('now', '-1 month'))
+GROUP BY standardiTunnus
+ORDER BY palautuksia DESC
+LIMIT 10
